@@ -1,6 +1,6 @@
 {
   "name": "rsa-raw",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Textbook RSA encode & decode",
   "main": "index.js",
   "scripts": {
