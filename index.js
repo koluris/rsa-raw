@@ -4,8 +4,12 @@ const keyPair = require('node-forge').pki.rsa.generateKeyPair({
 });
 
 const RSA = {
+    modulus: () => {
+        return Buffer.from(keyPair.publicKey.n.toByteArray())
+    },
+
     scrambleMod: () => {
-        let modulus = Buffer.from(keyPair.publicKey.n.toByteArray());
+        let modulus = RSA.modulus();
         let i, scrambled = modulus.slice(1); // Skip the `0x00` at the start
 
         // A standard method as to how the L2 Clients decode the RSA Modulus on their end
@@ -18,6 +22,10 @@ const RSA = {
         for (i = 0; i < 0x40; i++) { scrambled[0x40 + i] ^= scrambled[0x00 + i]; }
 
         return scrambled;
+    },
+
+    encipher: (data) => {
+        return keyPair.publicKey.encrypt(data, 'RAW');
     },
 
     decipher: (data) => { // L2 Clients **do not** use `SPKI`, `PKCS1` or `PKCS8`
